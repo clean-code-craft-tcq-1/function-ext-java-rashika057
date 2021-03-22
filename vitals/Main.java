@@ -1,15 +1,44 @@
 package vitals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Main {
-    public static void main(String[] args) {
-    	InternationalizedText localeText=new InternationalizedText("de","DE");    	
-    	BatteryManagementSystem bms =new BatteryManagementSystem(localeText);
-        assert(bms.batteryIsOk(25, 70, 0.7f) == true);
-        assert(bms.batteryIsOk(50, 85, 0.0f) == false);
-        assert(bms.batteryIsOk(40, 60, 0.9f) == false);
-        assert(bms.chargeTemparatureInRange(60) == false);
-        assert(bms.dischargeTemparatureInRange(60) == true);
-        assert(bms.socInRange(10) == false);
-        assert(bms.chargeRateInRange(1.2f) == false);
+		
+    static boolean batteryIsOk(float temperature, float soc, float chargeRate) {  
+    	String	isTempOk = BMS.chargeTemparatureInRange(temperature);
+		String	issocOk = BMS.socInRange(soc);
+	   String	ischargeRateOk = BMS.chargeRateInRange(chargeRate);
+	    InternationalizedText.generateMsg("temp", BMS.chargeTemparatureWithinWarningRange(temperature), "de");
+	    InternationalizedText.generateMsg("soc", BMS.socWithinWarningRange(soc), "de");
+	    InternationalizedText.generateMsg("chargeRate", BMS.chargeRateWithinWarningRange(chargeRate), "de");
+	    consolidateAndReport(isTempOk,issocOk,ischargeRateOk);
+    	return (isOk(isTempOk) && isOk(issocOk) && isOk(ischargeRateOk));        
     }
+    
+    private static void consolidateAndReport(String isTempOk, String issocOk, String ischargeRateOk) {
+    	Map<String, String> hmap = new HashMap<>(); 
+        hmap.put(BMS.TEMP, isTempOk); 
+        hmap.put(BMS.SOC, issocOk); 
+        hmap.put(BMS.CHARGE_RATE, ischargeRateOk);
+        Reporter report=new ReportConsole();
+        BreachedBMSParamConsolidator bmsConsolidator = new BreachedBMSParamConsolidator(hmap,report);
+        bmsConsolidator.consolidateBreachedParamForReporting();
+	}
+
+	public static void printMessage(String name, String msg) {
+    	System.out.println(name+" "+msg);
+    }
+
+    public static void main(String[] args) {      
+			assert(batteryIsOk(25, 70, 0.7f) == true);
+			assert(batteryIsOk(50, 85, 0.0f) == false);
+	        assert(batteryIsOk(40, 60, 0.9f) == false);  
+	        assert(BMS.chargeTemparatureInRange(30).equals(BMS.NORMAL));  
+	        assert(BMS.chargeTemparatureInRange(60).equals(BMS.IS_HIGH));  
+    }
+
+	public static boolean isOk(String condition) {
+    	return condition.equals(BMS.NORMAL)? Boolean.TRUE : Boolean.FALSE;
+    }	
 }
