@@ -6,9 +6,9 @@ import java.util.Map;
 public class Main {
 		
     static boolean batteryIsOk(float temperature, float soc, float chargeRate) {  
-    	String	isTempOk = BMS.chargeTemparatureInRange(temperature);
-		String	issocOk = BMS.socInRange(soc);
-	   String	ischargeRateOk = BMS.chargeRateInRange(chargeRate);
+    	String	isTempOk = BMSConditionValidator.check( BMS.chargeTemparatureHigh(temperature), BMS.chargeTemparatureLow(temperature));
+		String	issocOk = BMSConditionValidator.check(BMS.socHigh(soc),BMS.socLow(soc));
+	   String	ischargeRateOk = BMSConditionValidator.check(BMS.chargeRateHigh(chargeRate),BMS.NORMAL);
 	    InternationalizedText.generateMsg("temp", BMS.chargeTemparatureWithinWarningRange(temperature), "de");
 	    InternationalizedText.generateMsg("soc", BMS.socWithinWarningRange(soc), "de");
 	    InternationalizedText.generateMsg("chargeRate", BMS.chargeRateWithinWarningRange(chargeRate), "de");
