@@ -33,4 +33,14 @@ public class BMSConditionValidator {
     	}
     	return BMS.NORMAL;
     }
+    
+    static String check(String chargeTemparatureHigh, String chargeTemparatureLow) {
+		if(chargeTemparatureHigh.equals(BMS.IS_HIGH)) {
+		return BMS.IS_HIGH;
+		}
+		else if(chargeTemparatureLow.equals(BMS.IS_LOW)) {
+			return BMS.IS_LOW;
+		}
+		return BMS.NORMAL;
+	}
 }
