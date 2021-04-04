@@ -1,7 +1,5 @@
 package vitals;
 
-import javafx.util.Pair;
-
 public class BMS {
 	
 	static final String IS_LOW = "is low";
@@ -14,17 +12,17 @@ public class BMS {
 	static final float SOC_LOWER_LIMIT =  20;
 	static final float SOC_UPPER_LIMIT =  80;
 	static final float CHARGE_RATE_UPPER_LIMIT =  0.8f;
-	    
+	
     static String chargeTemparatureWithinWarningRange(float tempVal) { 
-    	return BMSConditionValidator.valueInWarningRange(new Pair<>(TEMP_LOWER_LIMIT, TEMP_UPPER_LIMIT) ,tempVal);
+    	return BMSConditionValidator.valueInWarningRange(TEMP_LOWER_LIMIT, TEMP_UPPER_LIMIT ,tempVal);
     }
 		
 	static String socWithinWarningRange(float socVal) {
-    	return BMSConditionValidator.valueInWarningRange(new Pair <> (SOC_LOWER_LIMIT, SOC_UPPER_LIMIT),socVal);
+    	return BMSConditionValidator.valueInWarningRange(SOC_LOWER_LIMIT, SOC_UPPER_LIMIT,socVal);
     }
 	 
     static String chargeRateWithinWarningRange(float chargeRateVal) {
-    	return BMSConditionValidator.valueInWarningRange(new Pair <> (chargeRateVal, CHARGE_RATE_UPPER_LIMIT),chargeRateVal);
+    	return BMSConditionValidator.valueInWarningRange(chargeRateVal, CHARGE_RATE_UPPER_LIMIT,chargeRateVal);
     }
 
 	static String chargeTemparatureHigh(float tempVal) {
