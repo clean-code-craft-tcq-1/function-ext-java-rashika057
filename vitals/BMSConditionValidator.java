@@ -1,41 +1,53 @@
 package vitals;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
 public class BMSConditionValidator {
+	static final String IS_LOW = "low";
+	static final String IS_HIGH = "high";
+	static final String IS_WARNING = "approaching";
+	static final String NORMAL = "Ok";
+	
 	static String valueInRange(float min,float max,float value) {
     	if(value < min) {
-            return BMS.IS_LOW;
+            return IS_LOW;
         }
     	else if(value > max) {
-            return BMS.IS_HIGH;
+            return IS_HIGH;
         }
-    	return BMS.NORMAL;
+    	return NORMAL;
     }
     
        
     static String valueInWarningRange(float lowLevel, float highLevel,float value) {
     	String result = valueInRange(lowLevel,highLevel,value);
-    	if(result.equals(BMS.NORMAL)) {
+    	if(result.equals(NORMAL)) {
     		float warningLevel = (5*highLevel)/100;
-    		if(value <= (lowLevel+warningLevel)) {
-    			return BMS.IS_WARNING_LOW;
-    		}
-    		else if(value >= (highLevel-warningLevel)) {
-    			return BMS.IS_WARNING_HIGH;
-    		}
+    		result = valueInRange(lowLevel+warningLevel,highLevel-warningLevel,value);
+    		return result.equals(NORMAL)? NORMAL : IS_WARNING + " " + result;
     	}
-    	else {
-    		return result; 
-    	}
-    	return BMS.NORMAL;
+    	return result; 
     }
     
-    static String check(String chargeTemparatureHigh, String chargeTemparatureLow) {
-		if(chargeTemparatureHigh.equals(BMS.IS_HIGH)) {
-		return BMS.IS_HIGH;
-		}
-		else if(chargeTemparatureLow.equals(BMS.IS_LOW)) {
-			return BMS.IS_LOW;
-		}
-		return BMS.NORMAL;
+    static boolean batteryIsOk(HashMap<BMSFactors,Float> paramVal) {
+    	EnumMap<BMSFactors,String> paramResult=new EnumMap<>(BMSFactors.class);
+    	paramVal.forEach((param,val) -> paramResult.put(param,BMSConditionValidator.valueInWarningRange(param.getLowerLimit(),param.getHigherLimit(),val))
+    	);
+    	consolidateAndReport(paramResult);
+    	return isOk(paramResult);
+    }
+
+    private static boolean isOk(EnumMap<BMSFactors, String> paramResult) {
+    	return paramResult.values().stream().allMatch(val -> val.equals(NORMAL));
+	}
+    
+    private static void consolidateAndReport(EnumMap<BMSFactors, String> paramResult) {
+    	Map<String, String> hmap = new HashMap<>(); 
+    	paramResult.forEach((k,v) -> hmap.put(k.getName(),v));
+        Reporter report=new ReportConsole();
+        BreachedBMSParamConsolidator bmsConsolidator = new BreachedBMSParamConsolidator(hmap,report);
+        bmsConsolidator.consolidateBreachedParamForReporting();
 	}
 }
