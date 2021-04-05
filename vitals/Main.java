@@ -1,23 +1,19 @@
 package vitals;
+import java.util.EnumMap;
 
-public class Main {
-    static boolean batteryIsOk(float temperature, float soc, float chargeRate) {
-        if(temperature < 0 || temperature > 45) {
-            System.out.println("Temperature is out of range!");
-            return false;
-        } else if(soc < 20 || soc > 80) {
-            System.out.println("State of Charge is out of range!");
-            return false;
-        } else if(chargeRate > 0.8) {
-            System.out.println("Charge Rate is out of range!");
-            return false;
-        }
-        return true;
-    }
-
-    public static void main(String[] args) {
-        assert(batteryIsOk(25, 70, 0.7f) == true);
-        assert(batteryIsOk(50, 85, 0.0f) == false);
-        System.out.println("Some more tests needed");
+public class Main{
+  
+	static LocaleLang lang;
+	public static void main(String[] args) {
+		lang = LocaleLang.DE;
+    	EnumMap<BMSFactors,Float> paramVal=new EnumMap<>(BMSFactors.class);
+    	paramVal.put(BMSFactors.TEMP, 43f);
+    	paramVal.put(BMSFactors.SOC, 70f);
+    	paramVal.put(BMSFactors.CHARGE_RATE, 0.7f);
+        assert(BMSConditionValidator.batteryIsOk(paramVal) == Boolean.TRUE);
+        paramVal.put(BMSFactors.TEMP, 50f);
+    	paramVal.put(BMSFactors.SOC, 85f);
+    	paramVal.put(BMSFactors.CHARGE_RATE, 0.0f);
+        assert(BMSConditionValidator.batteryIsOk(paramVal) == Boolean.FALSE);
     }
 }
