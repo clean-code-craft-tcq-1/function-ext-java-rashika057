@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 public class InternationalizedText {
     
 public static String translate(String text) {
-Locale locale = new Locale(Main.lang.getLanguage(), Main.lang.getCountry());
+Locale locale = new Locale("en", "US");
 ResourceBundle bundle = ResourceBundle.getBundle("bundle.MessagesBundle",locale);  
 return bundle.getString(text);
 }
