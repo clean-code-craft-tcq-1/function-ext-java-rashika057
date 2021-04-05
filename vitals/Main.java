@@ -1,14 +1,13 @@
 package vitals;
+import java.util.EnumMap;
 
-import java.util.HashMap;
-import java.util.stream.IntStream;
-
-public class Main {
+public class Main{
   
-
+	static LocaleLang lang;
 	public static void main(String[] args) {
-    	HashMap<BMSFactors,Float> paramVal=new HashMap<>();
-    	paramVal.put(BMSFactors.TEMP, 25f);
+		lang = LocaleLang.DE;
+    	EnumMap<BMSFactors,Float> paramVal=new EnumMap<>(BMSFactors.class);
+    	paramVal.put(BMSFactors.TEMP, 43f);
     	paramVal.put(BMSFactors.SOC, 70f);
     	paramVal.put(BMSFactors.CHARGE_RATE, 0.7f);
         assert(BMSConditionValidator.batteryIsOk(paramVal) == Boolean.TRUE);

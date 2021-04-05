@@ -1,5 +1,4 @@
 package vitals;
-
 public enum BMSFactors {
 	TEMP("temp",0,45),
     SOC("soc",20,80),

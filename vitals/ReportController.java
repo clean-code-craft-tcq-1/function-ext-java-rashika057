@@ -1,5 +1,4 @@
 package vitals;
-
 import java.util.Map;
 
 public class ReportController implements Reporter {

@@ -1,5 +1,4 @@
 package vitals;
-
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class BMSConditionValidator {
     	return result; 
     }
     
-    static boolean batteryIsOk(HashMap<BMSFactors,Float> paramVal) {
+    static boolean batteryIsOk(EnumMap<BMSFactors,Float> paramVal) {
     	EnumMap<BMSFactors,String> paramResult=new EnumMap<>(BMSFactors.class);
     	paramVal.forEach((param,val) -> paramResult.put(param,BMSConditionValidator.valueInWarningRange(param.getLowerLimit(),param.getHigherLimit(),val))
     	);
@@ -40,7 +39,7 @@ public class BMSConditionValidator {
     }
 
     private static boolean isOk(EnumMap<BMSFactors, String> paramResult) {
-    	return paramResult.values().stream().allMatch(val -> val.equals(NORMAL));
+    	return paramResult.values().stream().allMatch(val -> val.equals(NORMAL) || val.contains(IS_WARNING));
 	}
     
     private static void consolidateAndReport(EnumMap<BMSFactors, String> paramResult) {
